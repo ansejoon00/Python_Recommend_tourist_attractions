@@ -10,23 +10,27 @@
     <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
-    <link rel="apple-touch-icon" href="https://static.vecteezy.com/system/resources/previews/000/620/372/non_2x/aircraft-airplane-airline-logo-label-journey-air-travel-airliner-symbol-vector-illustration.jpg" sizes="10">
-    <link rel="shortcut icon" href="https://static.vecteezy.com/system/resources/previews/000/620/372/non_2x/aircraft-airplane-airline-logo-label-journey-air-travel-airliner-symbol-vector-illustration.jpg" sizes="10">
+    <link rel="apple-touch-icon"
+        href="https://static.vecteezy.com/system/resources/previews/000/620/372/non_2x/aircraft-airplane-airline-logo-label-journey-air-travel-airliner-symbol-vector-illustration.jpg"
+        sizes="10">
+    <link rel="shortcut icon"
+        href="https://static.vecteezy.com/system/resources/previews/000/620/372/non_2x/aircraft-airplane-airline-logo-label-journey-air-travel-airliner-symbol-vector-illustration.jpg"
+        sizes="10">
     <title>여행지 고르는 창</title>
     <link rel="stylesheet" href="static/css/5_select_location.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script type="text/javascript" src="static/js/5_select_location.js"></script>
     <script>
         var selectedLocationPanelId1; // 전역 변수 선언
-        var selectedLocationPanelId2; 
-        function saveSelectedLocation(location, panelId1,panelId2) {
+        var selectedLocationPanelId2;
+        function saveSelectedLocation(location, panelId1, panelId2) {
             selectedLocationPanelId1 = panelId1; // 선택한 지역의 togglePanel 값을 전역 변수에 저장
             selectedLocationPanelId2 = panelId2;
             $.ajax({
                 type: 'POST',
                 url: '/save_selected_location',
                 data: { 'selected_location': location },
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                     // 서버에서의 응답에 대한 처리
                     if (response.status === 'success') {
@@ -37,7 +41,7 @@
                         console.error('Failed to save selected location.');
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error(error);
                     // 오류 발생 시의 동작
                 }
@@ -48,7 +52,7 @@
             $.ajax({
                 type: 'GET',
                 url: '/get_recommendations',
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                     if (response.status === 'success') {
                         updateRecommendationNames(response.attraction_names);
@@ -57,7 +61,7 @@
                         $.ajax({
                             type: 'GET',
                             url: '/get_attraction_name',
-                            success: function(attractionResponse) {
+                            success: function (attractionResponse) {
                                 console.log(attractionResponse);
                                 if (attractionResponse.status === 'success') {
                                     var attractionNames = attractionResponse.attraction_names;
@@ -74,7 +78,7 @@
                                     console.error('Failed to get attraction names.');
                                 }
                             },
-                            error: function(error) {
+                            error: function (error) {
                                 console.error(error);
                             }
                         });
@@ -82,7 +86,7 @@
                         console.error('Failed to get recommendation names.');
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error(error);
                 }
             });
@@ -96,19 +100,19 @@
                 var listItem = $('<li class="menu-item-has-children dropdown">');
                 var link = $('<a href="#" class="dropdown-toggle" onclick=" togglePanel(\'rightrightpanel\'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">')
                     .text(recommendation)
-                    .on('click', (function(recommendationCopy) {
-                        return function() {
+                    .on('click', (function (recommendationCopy) {
+                        return function () {
                             saveSelectedAttraction(recommendationCopy);
                         };
                     })(recommendation))
                     .appendTo(listItem);
                 var closeButton = $('<button type="button" onclick="removeAttraction(\'' + recommendation + '\'); moveTo' + selectedLocationPanelId2 + '()">x</button>');
                 var linkButton = $('<button type="button" onclick="getGoogleMapLink(\'' + recommendation + '\')">?</button>');
-                listItem.append(linkButton,closeButton);
+                listItem.append(linkButton, closeButton);
                 listItem.appendTo(recommendationList);
             }
         }
-        
+
         function updateAttractionNames(attractionNames) {
             var attractionList = $('.attraction-dropdown');
             attractionList.empty();
@@ -117,28 +121,28 @@
                 var listItem = $('<li class="menu-item-has-children dropdown">');
                 var link = $('<a href="#" class="dropdown-toggle" onclick="togglePanel(\'rightrightpanel\'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">')
                     .text(attraction)
-                    .on('click', (function(attractionCopy) {
-                        return function() {
+                    .on('click', (function (attractionCopy) {
+                        return function () {
                             saveSelectedAttraction(attractionCopy);
                         };
                     })(attraction))
                     .appendTo(listItem);
-        
+
                 var closeButton = $('<button type="button" onclick="removeAttraction(\'' + attraction + '\'); moveTo' + selectedLocationPanelId1 + '()" >x</button>');
-        
+
                 var linkButton = $('<button type="button" onclick="getGoogleMapLink(\'' + attraction + '\')">?</button>');
-        
+
                 listItem.append(linkButton, closeButton);
                 listItem.appendTo(attractionList);
             }
         }
-        
+
         function getGoogleMapLink(placeAddress) {
             $.ajax({
                 type: 'POST',
                 url: '/get_attraction_name',
                 data: { 'place_address': placeAddress },
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                     if (response.status === 'success') {
                         var mapLink = response.map_link;
@@ -149,7 +153,7 @@
                         console.error('Failed to get Google Map link.');
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error(error);
                 }
             });
@@ -218,54 +222,54 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-france');" aria-haspopup="true"
-                                aria-expanded="false"></i>프랑스</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-france');"
+                                aria-haspopup="true" aria-expanded="false"></i>프랑스</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-spain');" aria-haspopup="true" 
-                                aria-expanded="false"></i>스페인</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-spain');"
+                                aria-haspopup="true" aria-expanded="false"></i>스페인</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-uk');" aria-haspopup="true" 
-                                aria-expanded="false"> </i>영국</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-uk');"
+                                aria-haspopup="true" aria-expanded="false"> </i>영국</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-germany');" aria-haspopup="true" 
-                                aria-expanded="false"></i>독일</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-germany');"
+                                aria-haspopup="true" aria-expanded="false"></i>독일</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-nederland');" aria-haspopup="true" 
-                                aria-expanded="false"></i>네덜란드</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-nederland');"
+                                aria-haspopup="true" aria-expanded="false"></i>네덜란드</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-portugal');" aria-haspopup="true" 
-                                aria-expanded="false"></i>포르투갈</a>
-                        </li>  
-                        <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-denmark');" aria-haspopup="true" 
-                                aria-expanded="false"></i>덴마크</a>
-                        </li>      
-                        <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-belguim');" aria-haspopup="true" 
-                                aria-expanded="false"></i>벨기에</a>
-                        </li>        
-                        <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-austria');" aria-haspopup="true" 
-                                aria-expanded="false"></i>오스트리아</a>
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-portugal');"
+                                aria-haspopup="true" aria-expanded="false"></i>포르투갈</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-itary');" aria-haspopup="true" 
-                                aria-expanded="false"></i>이탈리아</a>
-                        </li>    
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-denmark');"
+                                aria-haspopup="true" aria-expanded="false"></i>덴마크</a>
+                        </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-swiss');" aria-haspopup="true" 
-                                aria-expanded="false"></i>스위스</a>
-                            
-                        </li> 
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-belguim');"
+                                aria-haspopup="true" aria-expanded="false"></i>벨기에</a>
+                        </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-czech');" aria-haspopup="true" 
-                                aria-expanded="false"></i>체코</a>
-                        </li> 
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-austria');"
+                                aria-haspopup="true" aria-expanded="false"></i>오스트리아</a>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-itary');"
+                                aria-haspopup="true" aria-expanded="false"></i>이탈리아</a>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-swiss');"
+                                aria-haspopup="true" aria-expanded="false"></i>스위스</a>
+
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middle-panel-czech');"
+                                aria-haspopup="true" aria-expanded="false"></i>체코</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -279,16 +283,24 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelfranceparis'), togglePanel('rightpanelfranceparis'); saveSelectedLocation('파리', 'middlerightpanelfranceparis','rightpanelfranceparis');" aria-haspopup="true" aria-expanded="false">파리</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelfranceparis'), togglePanel('rightpanelfranceparis'); saveSelectedLocation('파리', 'middlerightpanelfranceparis','rightpanelfranceparis');"
+                                aria-haspopup="true" aria-expanded="false">파리</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelfranceriox'), togglePanel('rightpanelfranceriox'); saveSelectedLocation('리옹','middlerightpanelfranceriox','rightpanelfranceriox');" aria-haspopup="true" aria-expanded="false">리옹</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelfranceriox'), togglePanel('rightpanelfranceriox'); saveSelectedLocation('리옹','middlerightpanelfranceriox','rightpanelfranceriox');"
+                                aria-haspopup="true" aria-expanded="false">리옹</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelfrancenice'), togglePanel('rightpanelfrancenice'); saveSelectedLocation('니스','middlerightpanelfrancenice','rightpanelfrancenice');" aria-haspopup="true" aria-expanded="false">니스</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelfrancenice'), togglePanel('rightpanelfrancenice'); saveSelectedLocation('니스','middlerightpanelfrancenice','rightpanelfrancenice');"
+                                aria-haspopup="true" aria-expanded="false">니스</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelfrancemarse'), togglePanel('rightpanelfrancemarse'); saveSelectedLocation('마르세유','middlerightpanelfrancemarse','rightpanelfrancemarse');" aria-haspopup="true" aria-expanded="false">마르세유</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelfrancemarse'), togglePanel('rightpanelfrancemarse'); saveSelectedLocation('마르세유','middlerightpanelfrancemarse','rightpanelfrancemarse');"
+                                aria-haspopup="true" aria-expanded="false">마르세유</a>
                         </li>
                     </ul>
                 </div>
@@ -303,16 +315,24 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelgerfrank'), togglePanel('rightpanelgerfrank'); saveSelectedLocation('프랑크푸르트','middlerightpanelgerfrank','rightpanelgerfrank');" aria-haspopup="true" aria-expanded="false">프랑크푸르트</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelgerfrank'), togglePanel('rightpanelgerfrank'); saveSelectedLocation('프랑크푸르트','middlerightpanelgerfrank','rightpanelgerfrank');"
+                                aria-haspopup="true" aria-expanded="false">프랑크푸르트</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelgermun'), togglePanel('rightpanelgermun'); saveSelectedLocation('뮌헨','middlerightpanelgermun','rightpanelgermun');" aria-haspopup="true" aria-expanded="false">뮌헨</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelgermun'), togglePanel('rightpanelgermun'); saveSelectedLocation('뮌헨','middlerightpanelgermun','rightpanelgermun');"
+                                aria-haspopup="true" aria-expanded="false">뮌헨</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelgerberl'), togglePanel('rightpanelgerberl'); saveSelectedLocation('베를린','middlerightpanelgerberl','rightpanelgerberl');" aria-haspopup="true" aria-expanded="false">베를린</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelgerberl'), togglePanel('rightpanelgerberl'); saveSelectedLocation('베를린','middlerightpanelgerberl','rightpanelgerberl');"
+                                aria-haspopup="true" aria-expanded="false">베를린</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelgerham'), togglePanel('rightpanelgerham'); saveSelectedLocation('함부르크','middlerightpanelgerham','rightpanelgerham');" aria-haspopup="true" aria-expanded="false">함부르크</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelgerham'), togglePanel('rightpanelgerham'); saveSelectedLocation('함부르크','middlerightpanelgerham','rightpanelgerham');"
+                                aria-haspopup="true" aria-expanded="false">함부르크</a>
                         </li>
                     </ul>
                 </div>
@@ -327,24 +347,29 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelspainmardrid'), togglePanel('rightpanelspainmardrid');saveSelectedLocation('마드리드','middlerightpanelspainmardrid','rightpanelspainmardrid');" aria-haspopup="true"
-                                aria-expanded="false">마드리드</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelspainmardrid'), togglePanel('rightpanelspainmardrid');saveSelectedLocation('마드리드','middlerightpanelspainmardrid','rightpanelspainmardrid');"
+                                aria-haspopup="true" aria-expanded="false">마드리드</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelspainsevia'), togglePanel('rightpanelspainsevia');saveSelectedLocation('세비야','middlerightpanelspainsevia','rightpanelspainsevia');" aria-haspopup="true"
-                                aria-expanded="false">세비야</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelspainsevia'), togglePanel('rightpanelspainsevia');saveSelectedLocation('세비야','middlerightpanelspainsevia','rightpanelspainsevia');"
+                                aria-haspopup="true" aria-expanded="false">세비야</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelspainbarce'), togglePanel('rightpanelspainbarce');saveSelectedLocation('바르셀로나','middlerightpanelspainbarce','rightpanelspainbarce');" aria-haspopup="true"
-                                aria-expanded="false">바르셀로나</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelspainbarce'), togglePanel('rightpanelspainbarce');saveSelectedLocation('바르셀로나','middlerightpanelspainbarce','rightpanelspainbarce');"
+                                aria-haspopup="true" aria-expanded="false">바르셀로나</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelspainmajor'), togglePanel('rightpanelspainmajor');saveSelectedLocation('팔마마요르카','middlerightpanelspainmajor','rightpanelspainmajor');" aria-haspopup="true"
-                                aria-expanded="false">팔마마요르카</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelspainmajor'), togglePanel('rightpanelspainmajor');saveSelectedLocation('팔마마요르카','middlerightpanelspainmajor','rightpanelspainmajor');"
+                                aria-haspopup="true" aria-expanded="false">팔마마요르카</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelspaingranada'), togglePanel('rightpanelspaingranada');saveSelectedLocation('그라나다','middlerightpanelspaingranada','rightpanelspaingranada');" aria-haspopup="true"
-                                aria-expanded="false">그라나다</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelspaingranada'), togglePanel('rightpanelspaingranada');saveSelectedLocation('그라나다','middlerightpanelspaingranada','rightpanelspaingranada');"
+                                aria-haspopup="true" aria-expanded="false">그라나다</a>
                         </li>
                     </ul>
                 </div>
@@ -359,16 +384,24 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpaneluklondon'), togglePanel('rightpaneluklondon'); saveSelectedLocation('런던','middlerightpaneluklondon','rightpaneluklondon');" aria-haspopup="true" aria-expanded="false">런던</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpaneluklondon'), togglePanel('rightpaneluklondon'); saveSelectedLocation('런던','middlerightpaneluklondon','rightpaneluklondon');"
+                                aria-haspopup="true" aria-expanded="false">런던</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelukedin'), togglePanel('rightpanelukedin'); saveSelectedLocation('에든버러','middlerightpanelukedin','rightpanelukedin');" aria-haspopup="true" aria-expanded="false">에든버러</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelukedin'), togglePanel('rightpanelukedin'); saveSelectedLocation('에든버러','middlerightpanelukedin','rightpanelukedin');"
+                                aria-haspopup="true" aria-expanded="false">에든버러</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelukman'), togglePanel('rightpanelukman'); saveSelectedLocation('맨체스터','middlerightpanelukman','rightpanelukman');" aria-haspopup="true" aria-expanded="false">맨체스터</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelukman'), togglePanel('rightpanelukman'); saveSelectedLocation('맨체스터','middlerightpanelukman','rightpanelukman');"
+                                aria-haspopup="true" aria-expanded="false">맨체스터</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelukbirming'), togglePanel('rightpanelukbirming'); saveSelectedLocation('버밍엄','middlerightpanelukbirming','rightpanelukbirming');" aria-haspopup="true" aria-expanded="false">버밍엄</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelukbirming'), togglePanel('rightpanelukbirming'); saveSelectedLocation('버밍엄','middlerightpanelukbirming','rightpanelukbirming');"
+                                aria-haspopup="true" aria-expanded="false">버밍엄</a>
                         </li>
                     </ul>
                 </div>
@@ -383,7 +416,9 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelndarms'), togglePanel('rightpanelndarms'); saveSelectedLocation('암스테르담','middlerightpanelndarms','rightpanelndarms');" aria-haspopup="true" aria-expanded="false">암스테르담</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelndarms'), togglePanel('rightpanelndarms'); saveSelectedLocation('암스테르담','middlerightpanelndarms','rightpanelndarms');"
+                                aria-haspopup="true" aria-expanded="false">암스테르담</a>
                         </li>
                     </ul>
                 </div>
@@ -398,10 +433,14 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelptlis'), togglePanel('rightpanelptlis'); saveSelectedLocation('리스본','middlerightpanelptlis','rightpanelptlis');" aria-haspopup="true" aria-expanded="false">리스본</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelptlis'), togglePanel('rightpanelptlis'); saveSelectedLocation('리스본','middlerightpanelptlis','rightpanelptlis');"
+                                aria-haspopup="true" aria-expanded="false">리스본</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelptporto'), togglePanel('rightpanelptporto'); saveSelectedLocation('포르토','middlerightpanelptporto','rightpanelptporto');" aria-haspopup="true" aria-expanded="false">포르토</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelptporto'), togglePanel('rightpanelptporto'); saveSelectedLocation('포르토','middlerightpanelptporto','rightpanelptporto');"
+                                aria-haspopup="true" aria-expanded="false">포르토</a>
                         </li>
                     </ul>
                 </div>
@@ -416,10 +455,14 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpaneldenco'), togglePanel('rightpaneldenco'); saveSelectedLocation('코펜하겐','middlerightpaneldenco','rightpaneldenco');" aria-haspopup="true" aria-expanded="false">코펜하겐</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpaneldenco'), togglePanel('rightpaneldenco'); saveSelectedLocation('코펜하겐','middlerightpaneldenco','rightpaneldenco');"
+                                aria-haspopup="true" aria-expanded="false">코펜하겐</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpaneldenoden'), togglePanel('rightpaneldenoden'); saveSelectedLocation('오덴세','middlerightpaneldenoden','rightpaneldenoden');" aria-haspopup="true" aria-expanded="false">오덴세</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpaneldenoden'), togglePanel('rightpaneldenoden'); saveSelectedLocation('오덴세','middlerightpaneldenoden','rightpaneldenoden');"
+                                aria-haspopup="true" aria-expanded="false">오덴세</a>
                         </li>
                     </ul>
                 </div>
@@ -434,7 +477,9 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelbelbre'), togglePanel('rightpanelbelbre'); saveSelectedLocation('브뤼셀','middlerightpanelbelbre','rightpanelbelbre');" aria-haspopup="true" aria-expanded="false">브뤼셀</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelbelbre'), togglePanel('rightpanelbelbre'); saveSelectedLocation('브뤼셀','middlerightpanelbelbre','rightpanelbelbre');"
+                                aria-haspopup="true" aria-expanded="false">브뤼셀</a>
                         </li>
                         </li>
                     </ul>
@@ -450,10 +495,14 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelaustbin'), togglePanel('rightpanelaustbin'); saveSelectedLocation('비엔나','middlerightpanelaustbin','rightpanelaustbin');" aria-haspopup="true" aria-expanded="false">비엔나</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelaustbin'), togglePanel('rightpanelaustbin'); saveSelectedLocation('비엔나','middlerightpanelaustbin','rightpanelaustbin');"
+                                aria-haspopup="true" aria-expanded="false">비엔나</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelauszar'), togglePanel('rightpanelauszar'); saveSelectedLocation('잘츠부르크','middlerightpanelauszar','rightpanelauszar');" aria-haspopup="true" aria-expanded="false">잘츠부르크</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelauszar'), togglePanel('rightpanelauszar'); saveSelectedLocation('잘츠부르크','middlerightpanelauszar','rightpanelauszar');"
+                                aria-haspopup="true" aria-expanded="false">잘츠부르크</a>
                         </li>
                     </ul>
                 </div>
@@ -468,19 +517,29 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelitalyroma'), togglePanel('rightpanelitaryroma'); saveSelectedLocation('로마','middlerightpanelitalyroma','rightpanelitaryroma');" aria-haspopup="true" aria-expanded="false">로마</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelitalyroma'), togglePanel('rightpanelitaryroma'); saveSelectedLocation('로마','middlerightpanelitalyroma','rightpanelitaryroma');"
+                                aria-haspopup="true" aria-expanded="false">로마</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelitalypiren'), togglePanel('rightpanelitarypiren'); saveSelectedLocation('피렌체','middlerightpanelitalypiren','rightpanelitarypiren');" aria-haspopup="true" aria-expanded="false">피렌체</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelitalypiren'), togglePanel('rightpanelitarypiren'); saveSelectedLocation('피렌체','middlerightpanelitalypiren','rightpanelitarypiren');"
+                                aria-haspopup="true" aria-expanded="false">피렌체</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelitalybenis'), togglePanel('rightpanelitarybenis'); saveSelectedLocation('베니스','middlerightpanelitalybenis','rightpanelitarybenis');" aria-haspopup="true" aria-expanded="false">베니스</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelitalybenis'), togglePanel('rightpanelitarybenis'); saveSelectedLocation('베니스','middlerightpanelitalybenis','rightpanelitarybenis');"
+                                aria-haspopup="true" aria-expanded="false">베니스</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelitalynapoli'), togglePanel('rightpanelitarynapoli'); saveSelectedLocation('나폴리','middlerightpanelitalynapoli','rightpanelitarynapoli');" aria-haspopup="true" aria-expanded="false">나폴리</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelitalynapoli'), togglePanel('rightpanelitarynapoli'); saveSelectedLocation('나폴리','middlerightpanelitalynapoli','rightpanelitarynapoli');"
+                                aria-haspopup="true" aria-expanded="false">나폴리</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelitalymilan'), togglePanel('rightpanelitarymilan'); saveSelectedLocation('밀라노', 'middlerightpanelitalymilan', 'rightpanelitarymilan');" aria-haspopup="true" aria-expanded="false">밀라노</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelitalymilan'), togglePanel('rightpanelitarymilan'); saveSelectedLocation('밀라노', 'middlerightpanelitalymilan', 'rightpanelitarymilan');"
+                                aria-haspopup="true" aria-expanded="false">밀라노</a>
                         </li>
                     </ul>
                 </div>
@@ -495,13 +554,19 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelswisschi'), togglePanel('rightpanelswisschi'); saveSelectedLocation('취리히','middlerightpanelswisschi','rightpanelswisschi');" aria-haspopup="true" aria-expanded="false">취리히</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelswisschi'), togglePanel('rightpanelswisschi'); saveSelectedLocation('취리히','middlerightpanelswisschi','rightpanelswisschi');"
+                                aria-haspopup="true" aria-expanded="false">취리히</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelswissjeneba'), togglePanel('rightpanelswissjeneba'); saveSelectedLocation('제네바','middlerightpanelswissjeneba','rightpanelswissjeneba');" aria-haspopup="true" aria-expanded="false">제네바</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelswissjeneba'), togglePanel('rightpanelswissjeneba'); saveSelectedLocation('제네바','middlerightpanelswissjeneba','rightpanelswissjeneba');"
+                                aria-haspopup="true" aria-expanded="false">제네바</a>
                         </li>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelswissinter'), togglePanel('rightpanelswissinter'); saveSelectedLocation('인터라켄','middlerightpanelswissinter','rightpanelswissinter');" aria-haspopup="true" aria-expanded="false">인터라켄</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelswissinter'), togglePanel('rightpanelswissinter'); saveSelectedLocation('인터라켄','middlerightpanelswissinter','rightpanelswissinter');"
+                                aria-haspopup="true" aria-expanded="false">인터라켄</a>
                         </li>
                     </ul>
                 </div>
@@ -516,7 +581,9 @@
                         </li>
                         <br>
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="togglePanel('middlerightpanelczepra'), togglePanel('rightpanelczepra'); saveSelectedLocation('프라하','middlerightpanelczepra','rightpanelczepra');" aria-haspopup="true" aria-expanded="false">프라하</a>
+                            <a href="#" class="dropdown-toggle"
+                                onclick="togglePanel('middlerightpanelczepra'), togglePanel('rightpanelczepra'); saveSelectedLocation('프라하','middlerightpanelczepra','rightpanelczepra');"
+                                aria-haspopup="true" aria-expanded="false">프라하</a>
                         </li>
                     </ul>
                 </div>
@@ -532,10 +599,13 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); saveAndTogglePanel('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); saveAndTogglePanel('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
-                            <a href="#"><button type="button" onclick="getGoogleMapLink('{{ placeAddress }}', '{{ attraction }}')">?</button></a>
+                            <a href="#"><button type="button"
+                                    onclick="getGoogleMapLink('{{ placeAddress }}', '{{ attraction }}')">?</button></a>
                             <button type="button" onclick="moveTorightpanelfranceparis()">x</button>
                         </li>
                         {% endfor %}
@@ -549,18 +619,20 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTomiddlerightpanelfranceparis()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTomiddlerightpanelfranceparis()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
-                    
+
                 </div>
             </nav>
         </section>
@@ -574,7 +646,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelfrancenice()">x</button>
@@ -590,15 +664,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelfrancenice()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelfrancenice()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -614,7 +690,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelfrancemarse()">x</button>
@@ -630,15 +708,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelfrancemarse()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelfrancemarse()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -654,7 +734,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelriox()">x</button>
@@ -670,15 +752,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTomiddlerightpanelriox()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTomiddlerightpanelriox()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -695,7 +779,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpaneluklondon()">x</button>
@@ -711,15 +797,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpaneluklondon()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpaneluklondon()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -735,7 +823,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelukedin()">x</button>
@@ -751,16 +841,18 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
-                        
+
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelukedin()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelukedin()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -774,10 +866,12 @@
                     </li>
                     <br>
                     <ul class="nav navbar-nav attraction-dropdown">
-                        
+
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelukman()">x</button>
@@ -793,15 +887,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelukman()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelukman()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -817,7 +913,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelukbirming()">x</button>
@@ -833,20 +931,22 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelukbirming()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelukbirming()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
             </nav>
-        </section> 
+        </section>
 
         <section id="middlerightpanelspainmardrid" class="middlerightpanel" style="display: none;">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -858,7 +958,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelspainmardrid()">x</button>
@@ -874,15 +976,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelspainmardrid()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelspainmardrid()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -898,7 +1002,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelspainbarce()">x</button>
@@ -914,15 +1020,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelspainbarce()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelspainbarce()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -938,7 +1046,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelspainsevia()">x</button>
@@ -954,15 +1064,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelspainsevia()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelspainsevia()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -978,7 +1090,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelspainmajor()">x</button>
@@ -994,15 +1108,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelspainmajor()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelspainmajor()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1018,7 +1134,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelspaingranada()">x</button>
@@ -1034,15 +1152,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelspaingranada()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelspaingranada()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1059,7 +1179,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelgerfrank()">x</button>
@@ -1075,15 +1197,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelgerfrank()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelgerfrank()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1099,7 +1223,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelgermun()">x</button>
@@ -1115,15 +1241,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelgermun()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelgermun()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1139,7 +1267,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelgerberl()">x</button>
@@ -1155,15 +1285,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelgerberl()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelgerberl()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1179,7 +1311,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelgerham()">x</button>
@@ -1195,15 +1329,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelgerham()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelgerham()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1219,7 +1355,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelptlis()">x</button>
@@ -1235,15 +1373,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelptlis()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelptlis()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1259,7 +1399,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelptporto()">x</button>
@@ -1275,15 +1417,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelptporto()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelptporto()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1299,7 +1443,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpaneldenco()">x</button>
@@ -1315,15 +1461,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpaneldenco()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpaneldenco()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1339,7 +1487,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpaneldenoden()">x</button>
@@ -1355,15 +1505,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpaneldenoden()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpaneldenoden()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1379,7 +1531,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelbelbre()">x</button>
@@ -1395,15 +1549,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelbelbre()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelbelbre()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1419,7 +1575,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelndarms()">x</button>
@@ -1435,15 +1593,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelndarms()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelndarms()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1459,7 +1619,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelaustbin()">x</button>
@@ -1475,15 +1637,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelaustbin()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelaustbin()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1499,7 +1663,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelauszar()">x</button>
@@ -1515,15 +1681,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelauszar()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelauszar()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1539,7 +1707,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelitalyroma()">x</button>
@@ -1555,15 +1725,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelitaryroma()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelitaryroma()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1579,7 +1751,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelitalypiren()">x</button>
@@ -1595,15 +1769,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelitarypiren()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelitarypiren()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1619,7 +1795,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelitalybenis()">x</button>
@@ -1635,15 +1813,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelitarybenis()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelitarybenis()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1659,7 +1839,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelitalynapoli()">x</button>
@@ -1675,15 +1857,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelitarynapoli()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelitarynapoli()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1699,7 +1883,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelitalymilan()">x</button>
@@ -1715,15 +1901,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelitarymilan()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelitarymilan()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1739,7 +1927,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelswisschi()">x</button>
@@ -1755,15 +1945,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelswisschi()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelswisschi()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1779,7 +1971,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelswissinter()">x</button>
@@ -1795,15 +1989,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelswissinter()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelswissinter()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1819,7 +2015,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelswissjeneba()">x</button>
@@ -1835,15 +2033,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelswissjeneba()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelswissjeneba()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1859,7 +2059,9 @@
                     <ul class="nav navbar-nav attraction-dropdown">
                         {% for attraction in attraction_names %}
                         <li class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
                                 {{ attraction }}
                             </a>
                             <button type="button" onclick="moveTomiddlerightpanelczepra()">x</button>
@@ -1875,15 +2077,17 @@
                     <li class="active">
                         &nbsp;<label for="recommend">추천지</label>
                     </li>
-                    <br> 
+                    <br>
                     <ul class="nav navbar-nav recommend-dropdown">
                         {% for attraction in attraction_names %}
-                            <li class="menu-item-has-children dropdown">
-                                <a href="#" class="dropdown-toggle" onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();" aria-haspopup="true" aria-expanded="false">
-                                    {{ attraction }}
-                                </a>
-                                <button type="button" onclick="moveTorightpanelczepra()">x</button>
-                            </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                onclick="saveSelectedAttraction('{{ attraction }}'); togglePanel('rightrightpanel'); moveTorightrightpanel();"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ attraction }}
+                            </a>
+                            <button type="button" onclick="moveTorightpanelczepra()">x</button>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -1905,24 +2109,24 @@
             </div>
         </section>
         <script>
-            var datecount = {{datecount}};
+            var datecount = {{ datecount }};
             var start_date = sessionStorage.getItem('start_date');
-            
+
             if (start_date) {
                 document.querySelector('.date_time h3').textContent = start_date;
             }
             if (datecount) {
-                
+
             }
-            
+
             function resetPage() {
                 window.location.href = "/select_location";
                 console.log(datecount)
             }
-            
+
             function goToBpSleep() {
                 window.location.href = "/select_sleep?datecount=" + datecount;
             }
-        </script>       
+        </script>
     </div>
 </body>
