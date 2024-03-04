@@ -85,7 +85,7 @@
 │   ├── 5_select_location.html
 │   ├── 6_select_sleep.html
 │   ├── 7_select_move.html
-│   ├── 7_select_move_last.html
+│   ├── 8_select_move_last.html
 │   └── 9_result_table.html
 │
 ├── Flow_Chart-Recommend tourist attractions.drawio.png : 순서도
